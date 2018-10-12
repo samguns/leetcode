@@ -1,13 +1,36 @@
 #include <iostream>
 #include <string>
 #include <cassert>
+#include <unordered_map>
 
 using namespace std;
 
 class Solution {
  public:
   int lengthOfLongestSubstring(string s) {
+    size_t str_len = s.length();
+    int start(0);
+    int longest_len(0);
+    unordered_map<char, int> char_map;
 
+    for (int i = 0; i < str_len; i++) {
+      char c = s[i];
+      if (char_map.find(c) != char_map.end()) {
+        if (char_map[c] >= start) {
+          start = char_map[c] + 1;
+          char_map[c] = i;
+          continue;
+        }
+      }
+
+      int len = (i - start) + 1;
+      if (len > longest_len) {
+        longest_len = len;
+      }
+      char_map[c] = i;
+    }
+
+    return longest_len;
   }
 };
 
