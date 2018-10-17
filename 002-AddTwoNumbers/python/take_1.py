@@ -1,10 +1,11 @@
-import sys
+import json
 
 # Definition for singly-linked list.
 class ListNode:
     def __init__(self, x):
         self.val = x
         self.next = None
+
 
 class Solution:
     def addTwoNumbers(self, l1, l2):
@@ -13,54 +14,85 @@ class Solution:
         :type l2: ListNode
         :rtype: ListNode
         """
+        ret = ListNode(0)
+        curr = ret
         carry = 0
-        result = ListNode(None)
-        curr = result
 
-        while (l1 is not None) or (l2 is not None):
+        while (l1 != None) or (l2 != None):
             lhs, rhs = 0, 0
-            if l1 is not None:
+            if l1 != None:
                 lhs = l1.val
                 l1 = l1.next
 
-            if l2 is not None:
+            if l2 != None:
                 rhs = l2.val
                 l2 = l2.next
 
-            sum = lhs + rhs + carry
+            acc = lhs + rhs + carry
+            carry = int(acc / 10)
 
-            if sum >= 10:
-                sum = sum % 10
-                carry = 1
-            else:
-                carry = 0
+            n = ListNode(acc % 10)
+            curr.next = n
+            curr = n
 
-            r = ListNode(sum)
-            curr.next = r
-            curr = r
+        if carry != 0:
+            curr.next = ListNode(carry)
 
-        if carry == 1:
-            r = ListNode(carry)
-            curr.next = r
+        return ret.next
 
-        return result.next
+
+def stringToIntegerList(input):
+    return json.loads(input)
+
+
+def stringToListNode(input):
+    # Generate list from the input
+    numbers = stringToIntegerList(input)
+
+    # Now convert that list into linked list
+    dummyRoot = ListNode(0)
+    ptr = dummyRoot
+    for number in numbers:
+        ptr.next = ListNode(number)
+        ptr = ptr.next
+
+    ptr = dummyRoot.next
+    return ptr
+
+
+def listNodeToString(node):
+    if not node:
+        return "[]"
+
+    result = ""
+    while node:
+        result += str(node.val) + ", "
+        node = node.next
+    return "[" + result[:-2] + "]"
+
+
+def main():
+    import sys
+    import io
+    def readlines():
+        for line in io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8'):
+            yield line.strip('\n')
+
+    lines = readlines()
+    while True:
+        try:
+            line = next(lines)
+            l1 = stringToListNode(line)
+            line = next(lines)
+            l2 = stringToListNode(line)
+
+            ret = Solution().addTwoNumbers(l1, l2)
+
+            out = listNodeToString(ret)
+            print(out)
+        except StopIteration:
+            break
 
 
 if __name__ == '__main__':
-    nums1 = [6, 3, 4, 2]
-    nums2 = [4, 6, 5]
-
-    l1, l2, = None, None
-    for _, v in enumerate(nums1):
-        l = ListNode(v)
-        l.next = l1
-        l1 = l
-
-    for _, v in enumerate(nums2):
-        l = ListNode(v)
-        l.next = l2
-        l2 = l
-
-    solution = Solution()
-    ret = solution.addTwoNumbers(l1, l2)
-    print(ret)
+    main()
