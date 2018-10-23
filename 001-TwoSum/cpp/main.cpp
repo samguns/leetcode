@@ -15,15 +15,14 @@ class Solution {
 
     for (int i = 0; i < nums.size(); i++) {
       int comp = target - nums[i];
-
-      unordered_map<int, int>::const_iterator got = comp_map.find(comp);
-      if (got != comp_map.end()) {
+      unordered_map<int, int>::const_iterator cit = comp_map.find(comp);
+      if (cit != comp_map.end()) {
         ret.push_back(comp_map[comp]);
         ret.push_back(i);
         break;
+      } else {
+        comp_map[nums[i]] = i;
       }
-
-      comp_map[nums[i]] = i;
     }
 
     return ret;
