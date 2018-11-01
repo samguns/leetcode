@@ -3,7 +3,6 @@
 #include <vector>
 #include <algorithm>
 #include <sstream>
-#include <unordered_map>
 
 using namespace std;
 
@@ -16,17 +15,13 @@ class Solution {
       return ret;
     }
     sort(nums.begin(), nums.end());
-    int target = -(nums[0] + nums[n-1]);
-    if (target < nums[0] || target > nums[n-1]) {
-      return ret;
-    }
-
-    unordered_map<int, int> found;
 
     for (int i = 0; i < n-2; i++) {
       int a = nums[i];
-      if (found.find(a) != found.end()) {
-        continue;
+      if (i > 0) {
+        if (nums[i-1] == a) {
+          continue;
+        }
       }
 
       int start = i + 1;
@@ -35,20 +30,17 @@ class Solution {
       while (start < end) {
         int b = nums[start];
         int c = nums[end];
-        if (found.find(b) != found.end() && found.find(c) != found.end()) {
-          start++;
-          end--;
-          continue;
-        }
 
         int result = a+b+c;
         if (result == 0) {
           ret.emplace_back(vector<int>{a, b, c});
-          found[a] = i;
-          found[b] = start;
-          found[c] = end;
-          start++;
-          end--;
+          do {
+            start++;
+          } while ((start < end) && (nums[start] == b));
+
+          do {
+            end--;
+          } while ((start < end) && (nums[end] == c));
         } else if (result < 0) {
           start++;
         } else {
