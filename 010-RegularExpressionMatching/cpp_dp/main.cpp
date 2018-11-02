@@ -1,22 +1,22 @@
 #include <iostream>
 #include <string>
 #include <cassert>
+#include <vector>
 
 using namespace std;
 
 class Solution {
  public:
-  bool isMatch(string s, string p) {
-    bool m[s.size()+1][p.size()+1];
-    memo = (bool **)m;
+  bool isMatch(const string &s, const string& p) {
+    vector<vector<bool>> m(s.size()+1, vector<bool>(p.size()+1, false));
 
-    return dp(0, 0, s, p);
+    return dp(m, 0, 0, s, p);
   }
 
  private:
-  bool dp(int i, int j, string s, string p) {
-    if (memo[i][j] != false) {
-      return memo[i][j] == true;
+  bool dp(vector<vector<bool>>& memo, int i, int j, const string& s, const string& p) {
+    if (memo[i][j]) {
+      return memo[i][j];
     }
 
     bool ans;
@@ -27,9 +27,9 @@ class Solution {
           (p[j] == s[i] || p[j] == '.'));
 
       if (j+1 < p.size() && p[j+1] == '*') {
-        ans = (dp(i, j+2, s, p) || first_match && dp(i+1, j, s, p));
+        ans = dp(memo, i, j+2, s, p) || (first_match && dp(memo, i+1, j, s, p));
       } else {
-        ans = first_match && dp(i+1, j+1, s, p);
+        ans = first_match && dp(memo, i+1, j+1, s, p);
       }
     }
 
@@ -37,8 +37,6 @@ class Solution {
 
     return ans;
   }
-
-  bool **memo;
 };
 
 string stringToString(string input) {
