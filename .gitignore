@@ -163,6 +163,7 @@ venv.bak/
 hs_err_pid*
 
 *.idea/
+cmake_build_debug
 
 .gradle
 /build/
